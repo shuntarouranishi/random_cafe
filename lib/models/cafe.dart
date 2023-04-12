@@ -1,7 +1,7 @@
 class Cafe {
   final String name;
   final String address;
-  final String? photoReference; // Add this field
+  final String? photoReference;
 
   Cafe({required this.name, required this.address, this.photoReference});
 

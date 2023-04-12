@@ -7,12 +7,24 @@ class CafeInfoScreen extends StatelessWidget {
 
   CafeInfoScreen({required this.cafe});
 
+  Widget buildCafeImage(BuildContext context) {
+    if (cafe.photoReference != null) {
+      final String apiKey = 'AIzaSyDU2zpMBnMMB_auKVq0WMhGjSU6Ma5DAp8';
+      final String imageUrl =
+          'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${cafe.photoReference}&key=$apiKey';
+
+      return CachedNetworkImage(
+        imageUrl: imageUrl,
+        placeholder: (context, url) => CircularProgressIndicator(),
+        errorWidget: (context, url, error) => Icon(Icons.error),
+      );
+    } else {
+      return Icon(Icons.image_not_supported);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final String imageUrl = cafe.photoReference != null
-        ? 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${cafe.photoReference}&key=YOUR_API_KEY'
-        : 'assets/default_cafe_image.png'; // Replace with a default image path if the cafe doesn't have an image
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Cafe Information'),
@@ -22,12 +34,10 @@ class CafeInfoScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(cafe.name, style: TextStyle(fontSize: 24)),
+            Text(cafe.address, style: TextStyle(fontSize: 16)),
             SizedBox(height: 16),
-            CachedNetworkImage(
-              imageUrl: imageUrl,
-              placeholder: (context, url) => CircularProgressIndicator(),
-              errorWidget: (context, url, error) => Icon(Icons.error),
-            ),
+            buildCafeImage(context),
+            SizedBox(height: 16),
             TextButton(
               onPressed: () {
                 // TODO: Open Google Maps with the cafe's location
