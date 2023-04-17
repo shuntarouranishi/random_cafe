@@ -55,7 +55,7 @@ class _GachaAnimationScreenState extends State<GachaAnimationScreen> {
           children: [
             // Add gacha animation or placeholder here
             CircularProgressIndicator(),
-            Text('Drawing a random cafe...'),
+            Text('ガチャを引いています...'),
           ],
         ),
       ),

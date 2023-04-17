@@ -27,20 +27,21 @@ class WelcomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Welcome Screen'),
+        title: Text('Welcome'),
+        automaticallyImplyLeading: false, // Add this line to remove the back button
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          children: [
             Text(
-              'Welcome to Cafe Gacha',
+              'カフェを探そう！',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 30),
             ElevatedButton(
               onPressed: () => _getStarted(context),
-              child: Text('Get Started'),
+              child: Text('ガチャを引く'),
             ),
           ],
         ),
