@@ -1,30 +1,31 @@
 import 'dart:convert';
-import 'package:cafe_gacha/models/cafe.dart';
 import 'package:http/http.dart' as http;
+import 'package:cafe_gacha/models/cafe.dart';
 
 class CafeService {
-  // Replace this with your actual API key
-  final String apiKey = 'AIzaSyD2mZTUbEy4F7Gp-C9pZf9Gc097Fjg7CSQ';
+  final String apiKey = 'AIzaSyBsDHGQOJMaCjubsXeUCksfDTCGbQC1Y4U';
 
-  Future<List<Cafe>> fetchNearbyCafes(double latitude, double longitude) async {
-    final String url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$latitude,$longitude&radius=1000&type=cafe&key=$apiKey';
-
+  Future<List<Cafe>> getCafes(double latitude, double longitude) async {
+    final url =
+        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$latitude,$longitude&radius=1500&type=cafe&key=$apiKey';
     final response = await http.get(Uri.parse(url));
+    final data = jsonDecode(response.body);
 
-    // Add the print statement here
-    print(response.body);
-
-    if (response.statusCode == 200) {
-      final List<dynamic> results = jsonDecode(response.body)['results'];
-
-      if (results.isEmpty) {
-        throw Exception('No cafes found');
-      }
-
-      final List<Cafe> cafes = results.map((result) => Cafe.fromGooglePlaces(result)).toList();
+    if (data['status'] == 'OK') {
+      final List<dynamic> results = data['results'];
+      final List<Cafe> cafes = results.map((result) => Cafe.fromGooglePlaces(result, _calculateDistance(latitude, longitude, result))).toList();
       return cafes;
     } else {
-      throw Exception('Failed to fetch nearby cafes');
+      throw Exception('No Cafes to choose from');
     }
+  }
+
+  double _calculateDistance(double startLatitude, double startLongitude, Map<String, dynamic> result) {
+    final double endLatitude = result['geometry']['location']['lat'];
+    final double endLongitude = result['geometry']['location']['lng'];
+    final double distanceInDegrees = sqrt(pow(startLatitude - endLatitude, 2) + pow(startLongitude - endLongitude, 2));
+    final double distanceInMeters = distanceInDegrees * 111139;
+
+    return distanceInMeters;
   }
 }

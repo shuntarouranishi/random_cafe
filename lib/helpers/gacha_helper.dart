@@ -2,14 +2,19 @@ import 'dart:math';
 import 'package:cafe_gacha/models/cafe.dart';
 
 class GachaHelper {
+  static final Random _random = Random();
+
   static Cafe selectRandomCafe(List<Cafe> cafes) {
     if (cafes.isEmpty) {
-      throw Exception('No cafes found');
+      throw Exception('No cafes to choose from');
     }
-    Random random = Random();
-    int randomIndex = random.nextInt(cafes.length);
+
+    int randomIndex = _random.nextInt(cafes.length);
     return cafes[randomIndex];
   }
 }
+
+
+
 
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cafe_gacha/widgets/app_theme.dart';
 import 'package:cafe_gacha/screens/welcome_screen.dart';
 
+
 void main() {
   runApp(CafeGachaApp());
 }
