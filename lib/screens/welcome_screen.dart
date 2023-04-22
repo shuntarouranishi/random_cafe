@@ -1,18 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:cafe_gacha/screens/gacha_animation_screen.dart';
 import 'package:cafe_gacha/services/location_service.dart';
-import 'package:flutter/material.dart';
-// Add other necessary imports
 
+class WelcomeScreen extends StatefulWidget {
+  @override
+  _WelcomeScreenState createState() => _WelcomeScreenState();
+}
 
-class WelcomeScreen extends StatelessWidget {
+class _WelcomeScreenState extends State<WelcomeScreen> {
+  double _selectedDistance = 500.0;
+  List<double> sliderValues = [100, 300, 700, 1000];
+
   Future<void> _getStarted(BuildContext context) async {
     bool permissionGranted = await LocationService().requestPermission();
 
     if (permissionGranted) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => GachaAnimationScreen()),
+        MaterialPageRoute(
+          builder: (context) => GachaAnimationScreen(
+            selectedDistance: _selectedDistance,
+            onNoCafesFound: () {
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('No cafes found within the selected range.'),
+                ),
+              );
+            },
+          ),
+        ),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -27,16 +44,37 @@ class WelcomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text('Welcome'),
-        automaticallyImplyLeading: false, // Add this line to remove the back button
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Container(
+              width: 90, // Set the desired width
+              height: 180, // Set the desired height
+              child: Image.asset('assets/images/cafe-icon.jpg', fit: BoxFit.cover),
+            ),
+            Text('カフェを探そう！',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+
+            SizedBox(height: 30),
+            Slider(
+              value: _selectedDistance,
+              min: 100,
+              max: 1000,
+              onChanged: (double value) {
+                setState(() {
+                  _selectedDistance = sliderValues.reduce((a, b) =>
+                  (value - a).abs() < (value - b).abs() ? a : b);
+                });
+              },
+            ),
             Text(
-              'カフェを探そう！',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              '${_selectedDistance.toInt()}m',
+              style: TextStyle(fontSize: 18),
             ),
             SizedBox(height: 30),
             ElevatedButton(
